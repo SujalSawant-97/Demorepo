@@ -136,6 +136,7 @@
           name="appointmentDateTime"
           required
           class="form-control"
+
         /><br /><br />
 
         <button type="submit" class="btn btn-success">Request Appointment</button>
@@ -148,5 +149,32 @@
       crossorigin="anonymous"
     ></script>
     <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("appointmentDateTime");
+
+        // Get current datetime in the correct format for datetime-local (YYYY-MM-DDThh:mm)
+        const now = new Date();
+        // Adjust for timezone offset
+        const offset = now.getTimezoneOffset();
+        const localDateTime = new Date(now.getTime() - offset * 60 * 1000)
+          .toISOString()
+          .slice(0, 16);
+
+        // Set the min attribute dynamically
+        dateInput.setAttribute("min", localDateTime);
+
+        // Add submit event to check for past datetime selection
+        const form = document.getElementById("patient-appointment-form");
+        form.addEventListener("submit", function (e) {
+          const selectedDateTime = new Date(dateInput.value);
+          const currentDateTime = new Date();
+          if (selectedDateTime < currentDateTime) {
+            e.preventDefault(); // Prevent form submission
+            alert("Please select a future date and time. Past dates/times are not allowed.");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
